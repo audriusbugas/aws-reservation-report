@@ -1,0 +1,16 @@
+{
+    "name": "audriusbugas/aws-reservation-report",
+    "description": "Small php CLI tool to check if running AWS reservations matches",
+    "type": "project",
+    "require": {
+        "symfony/console": "^4.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Audrius Bugas",
+            "email": "bugas.audrius@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
