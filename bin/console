@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+
+<?php
+use Symfony\Component\Console\Input\ArgvInput;
+include __DIR__.'/../vendor/autoload.php';
+
+$application = new \Symfony\Component\Console\Application('reservation-report');
+$output = new \Symfony\Component\Console\Output\ConsoleOutput();
+
+$application->add(new AWS\Reservations\Command\GenerateReportCommand());
+
+$application->run(new ArgvInput(), $output);
