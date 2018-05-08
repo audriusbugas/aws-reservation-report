@@ -23,6 +23,11 @@ class GenerateReportCommand extends Command
                 'g',
                 InputOption::VALUE_REQUIRED,
                 'Search keywords for grouping instances'
+            )->addOption(
+                'csv',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'CSV file for output'
             )
             ->setDescription('Generated reserved instances report');
     }
@@ -43,7 +48,11 @@ class GenerateReportCommand extends Command
             $groupNames
         ))->generate();
 
-        $this->outputTable($report, $output);
+        if ($input->getOption('csv')) {
+            $this->outputCsv($report, $input->getOption('csv'));
+        } else {
+            $this->outputTable($report, $output);
+        }
     }
 
     /**
@@ -56,5 +65,22 @@ class GenerateReportCommand extends Command
         $table->setHeaders($report['header']);
         $table->setRows($report['body']);
         $table->render();
+    }
+
+    /**
+     * @param array $report
+     * @param string $file
+     */
+    private function outputCsv($report, $file)
+    {
+        $out = fopen($file, 'w');
+
+        fputcsv($out, $report['header']);
+
+        foreach ($report['body'] as $line) {
+            fputcsv($out, $line);
+        }
+
+        fclose($out);
     }
 }
