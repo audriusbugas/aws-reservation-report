@@ -96,13 +96,19 @@ class Report
 
         foreach ($reservations as $reservation) {
             if ($reservation instanceof Reservation) {
-                $out['body'][] = [
-                    '',
-                    $reservation->getType(),
-                    $reservation->getAvailabilityZone(),
-                    0,
-                    $reservation->getCount()
-                ];
+                $expirations = array_fill_keys($dates, '');
+                $expirations[$reservation->getExpires()->format('Y-m-d')] = $reservation->getCount();
+
+                $out['body'][] = array_merge(
+                    [
+                        '',
+                        $reservation->getType(),
+                        $reservation->getAvailabilityZone(),
+                        0,
+                        $reservation->getCount()
+                    ],
+                    array_values($expirations)
+                );
             }
         }
 
