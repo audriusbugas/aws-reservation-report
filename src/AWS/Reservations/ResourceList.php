@@ -29,4 +29,38 @@ class ResourceList implements \IteratorAggregate
     {
         return new NonEmptyIterator(new \ArrayIterator($this->data));
     }
+
+    public function sort()
+    {
+        uasort(
+            $this->data,
+            function (\AWS\Reservations\Resource $left, \AWS\Reservations\Resource $right) {
+                if ($left->getCount() == $right->getCount()) {
+                    if ($left->getType() == $right->getType()) {
+                        return 0;
+                    }
+
+                    return $left->getType() < $right->getType() ? -1 : 1;
+                }
+
+                return $left->getCount() < $right->getCount() ? 1 : -1;
+            }
+        );
+    }
+
+    /**
+     * @param ResourceList $list
+     */
+    public function match(self $list)
+    {
+        foreach ($this->data as $item) {
+            foreach ($list as $target) {
+                $item->match($target);
+
+                if ($item->isCovered()) {
+                    break;
+                }
+            }
+        }
+    }
 }

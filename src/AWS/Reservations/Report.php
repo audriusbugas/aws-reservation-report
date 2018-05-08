@@ -46,15 +46,33 @@ class Report
         ];
 
         $instances = (new InstancesParser($this->groups))->parse($this->instances);
+        $instances->sort();
+
+        $reservations = (new ReservationsParser())->parse($this->reservations);
+        $reservations->sort();
+
+        $instances->match($reservations);
 
         foreach ($instances as $instance) {
-            if ($instance instanceof InstanceGroup) {
+            if ($instance instanceof Resource) {
                 $out['body'][] = [
                     $instance->getName(),
                     $instance->getType(),
                     $instance->getAvailabilityZone(),
                     $instance->getCount(),
-                    0
+                    $instance->getMatchedCount()
+                ];
+            }
+        }
+
+        foreach ($reservations as $reservation) {
+            if ($reservation instanceof Reservation) {
+                $out['body'][] = [
+                    '',
+                    $reservation->getType(),
+                    $reservation->getAvailabilityZone(),
+                    0,
+                    $reservation->getCount()
                 ];
             }
         }
