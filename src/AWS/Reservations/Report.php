@@ -32,6 +32,22 @@ class Report
         $this->groups = $groups;
     }
 
+    /**
+     * @param Reservation[]|ResourceList $list
+     * @return array
+     */
+    protected function buildExpirationMap($list)
+    {
+        $out = [];
+
+        foreach ($list as $item) {
+            $out[$item->getGroupId()] = $item->getExpires()->format('Y-m-d');
+        }
+
+        return $out;
+    }
+
+
     public function generate()
     {
         $out = [
@@ -51,17 +67,30 @@ class Report
         $reservations = (new ReservationsParser())->parse($this->reservations);
         $reservations->sort();
 
+        $map = $this->buildExpirationMap($reservations);
+        $dates = array_unique(array_values($map));
+        sort($dates);
+        $out['header'] = array_merge($out['header'], $dates);
+
         $instances->match($reservations);
 
         foreach ($instances as $instance) {
             if ($instance instanceof Resource) {
-                $out['body'][] = [
-                    $instance->getName(),
-                    $instance->getType(),
-                    $instance->getAvailabilityZone(),
-                    $instance->getCount(),
-                    $instance->getMatchedCount()
-                ];
+                $expirations = array_fill_keys($dates, '');
+                foreach ($instance->getMatchedCounts() as $groupId => $matchedCount) {
+                    $expirations[$map[$groupId]] = $matchedCount;
+                }
+
+                $out['body'][] = array_merge(
+                    [
+                        $instance->getName(),
+                        $instance->getType(),
+                        $instance->getAvailabilityZone(),
+                        $instance->getCount(),
+                        $instance->getMatchedCount()
+                    ],
+                    array_values($expirations)
+                );
             }
         }
 

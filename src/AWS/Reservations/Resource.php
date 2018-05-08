@@ -122,4 +122,12 @@ abstract class Resource
             }
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getMatchedCounts(): array
+    {
+        return $this->matchedCounts;
+    }
 }

@@ -8,6 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateReportCommand extends Command
@@ -17,6 +18,12 @@ class GenerateReportCommand extends Command
         $this->setName('generate-report')
             ->addArgument('instances', InputArgument::REQUIRED, 'Instance list json file')
             ->addArgument('reservations', InputArgument::REQUIRED, 'Reservation list json file')
+            ->addOption(
+                'groups',
+                'g',
+                InputOption::VALUE_REQUIRED,
+                'Search keywords for grouping instances'
+            )
             ->setDescription('Generated reserved instances report');
     }
 
@@ -25,6 +32,10 @@ class GenerateReportCommand extends Command
         $groupNames = [];
         $instances = json_decode(file_get_contents($input->getArgument('instances')), true);
         $reservations = json_decode(file_get_contents($input->getArgument('reservations')), true);
+
+        if ($input->getOption('groups')) {
+            $groupNames = json_decode(file_get_contents($input->getOption('groups')), true);
+        }
 
         $report = (new Report(
             $instances,

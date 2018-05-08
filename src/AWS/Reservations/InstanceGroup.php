@@ -37,18 +37,22 @@ class InstanceGroup extends Resource
         $tags = [];
         $name = null;
 
-        foreach ($data['Tags'] as $tag) {
-            $tags[$tag['Key']] = $tag['Value'];
+        if (isset($data['Tags'])) {
+            foreach ($data['Tags'] as $tag) {
+                $tags[$tag['Key']] = $tag['Value'];
 
-            foreach ($search as $groupName => $prefix) {
-                if (strpos($tag['Value'], $prefix) !== false) {
-                    $name = $groupName;
-                    break;
+                foreach ($search as $groupName => $prefixes) {
+                    foreach ($prefixes as $prefix) {
+                        if (strpos($tag['Value'], $prefix) !== false) {
+                            $name = $groupName;
+                            break(3);
+                        }
+                    }
                 }
-            }
 
-            if ($tag['Key'] == 'Name') {
-                $name = $tag['Value'];
+                if ($tag['Key'] == 'Name') {
+                    $name = $tag['Value'];
+                }
             }
         }
 
