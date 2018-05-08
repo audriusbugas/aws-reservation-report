@@ -49,6 +49,26 @@ class ResourceList implements \IteratorAggregate
     }
 
     /**
+     * @param string $callable
+     */
+    public function filter($callable)
+    {
+        $this->data = array_filter($this->data, $callable);
+    }
+
+    /**
+     * @param string $type
+     */
+    public function filterType($type)
+    {
+        $this->filter(
+            function (\AWS\Reservations\Resource $item) use ($type) {
+                return strpos($item->getType(), $type) === 0;
+            }
+        );
+    }
+
+    /**
      * @param ResourceList $list
      */
     public function match(self $list)

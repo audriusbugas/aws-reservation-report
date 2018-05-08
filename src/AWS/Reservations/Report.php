@@ -48,7 +48,7 @@ class Report
     }
 
 
-    public function generate()
+    public function generate($type = null)
     {
         $out = [
             'header' => [
@@ -62,9 +62,11 @@ class Report
         ];
 
         $instances = (new InstancesParser($this->groups))->parse($this->instances);
+        $type && $instances->filterType($type);
         $instances->sort();
 
         $reservations = (new ReservationsParser())->parse($this->reservations);
+        $type && $reservations->filterType($type);
         $reservations->sort();
 
         $map = $this->buildExpirationMap($reservations);

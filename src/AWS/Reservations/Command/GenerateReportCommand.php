@@ -28,6 +28,12 @@ class GenerateReportCommand extends Command
                 'c',
                 InputOption::VALUE_REQUIRED,
                 'CSV file for output'
+            )->addOption(
+                'type',
+                't',
+                InputOption::VALUE_REQUIRED,
+                'Filter for instance type',
+                null
             )
             ->setDescription('Generated reserved instances report');
     }
@@ -46,7 +52,7 @@ class GenerateReportCommand extends Command
             $instances,
             $reservations,
             $groupNames
-        ))->generate();
+        ))->generate($input->getOption('type'));
 
         if ($input->getOption('csv')) {
             $this->outputCsv($report, $input->getOption('csv'));
