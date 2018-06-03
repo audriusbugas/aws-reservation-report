@@ -9,7 +9,7 @@ Small php CLI tool to check if running AWS reservations matches build on php
 4. Run `bin/get-data.sh`
 5. Run `bin/console generate-report data/instances.json data/reserved.json`
 
-#Options
+# Options
 
 - `--csv=out.csv` Output report into csv
 - `--type=c4.xlarge` Filter only lines for specific instance type. Just instance family can be used `--type=c4` 
