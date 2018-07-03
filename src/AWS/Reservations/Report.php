@@ -47,8 +47,12 @@ class Report
         return $out;
     }
 
-
-    public function generate($type = null)
+    /**
+     * @param null|string $type
+     * @param null|bool $covered
+     * @return array
+     */
+    public function generate($type = null, $covered = null)
     {
         $out = [
             'header' => [
@@ -75,6 +79,7 @@ class Report
         $out['header'] = array_merge($out['header'], $dates);
 
         $instances->match($reservations);
+        ($covered !== null) && $instances->filterCovered($covered);
 
         foreach ($instances as $instance) {
             if ($instance instanceof Resource) {

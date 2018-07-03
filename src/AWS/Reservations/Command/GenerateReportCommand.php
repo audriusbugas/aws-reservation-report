@@ -34,6 +34,11 @@ class GenerateReportCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Filter for instance type',
                 null
+            )->addOption(
+                'uncovered',
+                'u',
+                InputOption::VALUE_NONE,
+                'Filter for uncovered instances'
             )
             ->setDescription('Generated reserved instances report');
     }
@@ -52,7 +57,10 @@ class GenerateReportCommand extends Command
             $instances,
             $reservations,
             $groupNames
-        ))->generate($input->getOption('type'));
+        ))->generate(
+            $input->getOption('type'),
+            $input->getOption('uncovered') ? false : null
+        );
 
         if ($input->getOption('csv')) {
             $this->outputCsv($report, $input->getOption('csv'));

@@ -69,6 +69,18 @@ class ResourceList implements \IteratorAggregate
     }
 
     /**
+     * @param bool $covered
+     */
+    public function filterCovered($covered = false)
+    {
+        $this->filter(
+            function (\AWS\Reservations\Resource $item) use ($covered) {
+                return $item->isCovered() === $covered;
+            }
+        );
+    }
+
+    /**
      * @param ResourceList $list
      */
     public function match(self $list)
