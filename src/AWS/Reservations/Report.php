@@ -65,15 +65,10 @@ class Report
             'body' => []
         ];
 
-        $instances = (new InstancesParser($this->groups))->parse($this->instances);
-        $type && $instances->filterType($type);
-        $instances->sort();
-
-        $reservations = (new ReservationsParser())->parse($this->reservations);
-        $type && $reservations->filterType($type);
-        $reservations->sort();
-
+        $instances = $this->createInstances($type);
+        $reservations = $this->createReservations($type);
         $map = $this->buildExpirationMap($reservations);
+
         $dates = array_unique(array_values($map));
         sort($dates);
         $out['header'] = array_merge($out['header'], $dates);
@@ -120,5 +115,40 @@ class Report
         }
 
         return $out;
+    }
+
+    /**
+     * @param $type
+     * @return ResourceList
+     */
+    private function createInstances($type = null)
+    {
+        $instances = (new InstancesParser($this->groups))->parse($this->instances);
+        $type && $instances->filterType($type);
+        $instances->sort();
+        return $instances;
+    }
+
+    /**
+     * @param $type
+     * @return ResourceList
+     */
+    private function createReservations($type = null)
+    {
+        $reservations = (new ReservationsParser())->parse($this->reservations);
+        $type && $reservations->filterType($type);
+        $reservations->sort();
+        return $reservations;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUnusedReservations()
+    {
+        $instances = $this->createInstances();
+        $reservations = $this->createReservations();
+        $instances->match($reservations);
+        return $reservations->count();
     }
 }

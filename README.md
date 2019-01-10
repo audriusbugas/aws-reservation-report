@@ -8,6 +8,7 @@ Small php CLI tool to check if running AWS reservations matches running instance
 3. Run `composer install`
 4. Run `bin/get-data.sh`
 5. Run `bin/console generate-report data/instances.json data/reserved.json`
+6. To get unused reservations count use`bin/console unused-reservations data/instances.json data/reserved.json`
 
 # Options
 

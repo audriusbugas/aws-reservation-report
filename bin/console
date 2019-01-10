@@ -8,5 +8,6 @@ $application = new \Symfony\Component\Console\Application('reservation-report');
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 
 $application->add(new AWS\Reservations\Command\GenerateReportCommand());
+$application->add(new AWS\Reservations\Command\UnusedReservationsCountCommand());
 
 $application->run(new ArgvInput(), $output);

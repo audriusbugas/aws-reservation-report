@@ -95,4 +95,12 @@ class ResourceList implements \IteratorAggregate
             }
         }
     }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count(iterator_to_array($this));
+    }
 }
