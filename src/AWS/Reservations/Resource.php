@@ -115,7 +115,8 @@ abstract class Resource
      */
     public function match(self $resource)
     {
-        if ($this->getMatchId() === $resource->getMatchId()) {
+        if (fnmatch($this->getMatchId(), $resource->getMatchId()) ||
+            fnmatch($resource->getMatchId(), $this->getMatchId())) {
             if ($this->getMatchedCount() < $this->getCount()) {
                 $this->matchedCounts[$resource->getGroupId()] =
                     $resource->detach($this->getCount() - $this->getMatchedCount());

@@ -41,7 +41,7 @@ class Reservation extends Resource
     {
         return new self(
             $data['InstanceType'],
-            $data['AvailabilityZone'],
+            isset($data['AvailabilityZone']) ? $data['AvailabilityZone'] : '*',
             $data['InstanceCount'],
             new \DateTime($data['End'])
         );
